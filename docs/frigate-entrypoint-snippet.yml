@@ -1,0 +1,17 @@
+# This is the entrypoint override on the frigate service itself (not
+# part of the watchdog, but documented here since it's the
+# complementary fix for the startup-ordering half of the problem).
+# It delays exec /init (Frigate's s6-overlay PID 1) until the
+# Mosquitto broker's port is reachable, so Frigate never even attempts
+# its first MQTT connect before the broker on the other host is ready.
+services:
+  frigate:
+    entrypoint: >
+      bash -c "
+      echo 'Waiting for remote Mosquitto to come online...';
+      until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/192.168.0.9/1883' 2>/dev/null; do
+        sleep 2;
+      done;
+      echo 'Mosquitto detected! Starting Frigate...';
+      exec /init
+      "

@@ -1,0 +1,18 @@
+# Add this service alongside the existing frigate service in the same
+# Portainer stack (frigate). It shares the stack's network namespace
+# context but does not require depends_on: see docs/design.md, "Why
+# no depends_on on frigate".
+services:
+  frigate-mqtt-watchdog:
+    image: bdelima/frigate-mqtt-watchdog:1.0.0
+    container_name: frigate-mqtt-watchdog
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      MQTT_HOST: "192.168.0.9"      # ojochal
+      MQTT_PORT: "1883"
+      CHECK_INTERVAL: "60"
+      STALE_THRESHOLD: "200"
+      FAIL_THRESHOLD: "1"
+      FRIGATE_CONTAINER: "frigate"
