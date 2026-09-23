@@ -12,6 +12,14 @@ RUN apk add --no-cache mosquitto-clients
 COPY watchdog.sh /watchdog.sh
 RUN chmod +x /watchdog.sh
 
+ARG VERSION=unknown
+ARG REVISION=unknown
+LABEL org.opencontainers.image.source="https://github.com/bdelima/frigate-mqtt-watchdog" \
+      org.opencontainers.image.url="https://github.com/bdelima/frigate-mqtt-watchdog" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${REVISION}"
+ENV APP_VERSION="${VERSION}"
+
 # Sane defaults for the tuning knobs; MQTT_HOST and FRIGATE_CONTAINER
 # are host-specific and have no default -- watchdog.sh runs with
 # `set -u` so it fails loudly if they're left unset rather than

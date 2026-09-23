@@ -23,6 +23,8 @@
 
 set -u
 
+echo "$(date -Iseconds) frigate-mqtt-watchdog v${APP_VERSION:-unknown} starting"
+
 apk add --no-cache mosquitto-clients >/dev/null 2>&1
 
 STATE_FILE=/tmp/last_stats_seen
